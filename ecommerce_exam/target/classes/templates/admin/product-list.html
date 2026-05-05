@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Quản lý sản phẩm</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="navbar">
+    <div style="font-size: 20px; font-weight: bold;">ShopAdmin Pro</div>
+    <div style="display: flex; align-items: center;">
+        <span>Xin chào, <b sec:authentication="name" style="color:#f1c40f;"></b>!</span>
+        <form th:action="@{/logout}" method="post" style="margin: 0; margin-left: 20px;">
+            <button type="submit" class="btn btn-danger">Đăng xuất</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0; color: #2c3e50;">Danh sách sản phẩm</h2>
+        <a th:href="@{/admin/products/create}" class="btn btn-success">+ Thêm Sản Phẩm Mới</a>
+    </div>
+
+    <form th:action="@{/admin/products}" method="get" style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <input type="text" name="keyword" th:value="${keyword}" class="form-control" style="max-width: 300px;" placeholder="Nhập tên sản phẩm để tìm..." />
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Hình ảnh</th>
+            <th>Tên sản phẩm</th>
+            <th>Giá (VNĐ)</th>
+            <th>SL</th>
+            <th>Danh mục</th>
+            <th style="text-align: center;">Thao tác</th>
+        </tr>
+        <tr th:each="p : ${products}">
+            <td th:text="${p.id}"></td>
+            <td><img th:src="@{${p.image_url}}" alt="Ảnh SP" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" /></td>
+            <td th:text="${p.name}" style="font-weight: 500;"></td>
+            <td th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+            <td th:text="${p.quantity}"></td>
+            <td><span style="background: #e1f5fe; color: #0277bd; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600;" th:text="${p.category?.name}"></span></td>
+            <td style="text-align: center;">
+                <a th:href="@{'/admin/products/edit/' + ${p.id}}" class="btn btn-primary" style="padding: 5px 10px;">Sửa</a>
+                <a th:href="@{'/admin/products/delete/' + ${p.id}}" class="btn btn-danger" style="padding: 5px 10px;" onclick="return confirm('Bạn có chắc chắn muốn xoá sản phẩm này?');">Xoá</a>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
